@@ -259,12 +259,29 @@ function AnalizadorUsuariosSocial({ onLogout }: AnalizadorUsuariosSocialProps) {
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (!token) {
-      router.push('/login');
+      router.push('/login'); // Redirigir si no hay token
     } else {
-      const storedUserName = localStorage.getItem('userName');
-      setCurrentUser(storedUserName);
+      fetchCurrentUser(); // Llamar a la función para obtener el usuario
     }
   }, [router]);
+
+  const fetchCurrentUser = async () => {
+    const token = localStorage.getItem('authToken');
+    try {
+      const response = await axios.get('/api/usuario', {
+        headers: {
+          Authorization: token
+        }
+      });
+      setCurrentUser(response.data.username); // Establecer el nombre de usuario
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        router.push('/login'); // Redirigir si el token es inválido
+      } else {
+        console.error('Error fetching user data:', error);
+      }
+    }
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -697,7 +714,8 @@ function AnalizadorUsuariosSocial({ onLogout }: AnalizadorUsuariosSocialProps) {
     if (!token) {
       router.push('/login'); // Redirige a login si no hay token
     } else {
-      setCurrentUser('nombreDeUsuario'); // Aquí deberías establecer el usuario actual
+      const storedUserName = localStorage.getItem('userName'); // Obtener el nombre de usuario almacenado
+      setCurrentUser(storedUserName); // Establecer el nombre de usuario actual
     }
 }, [router]);
 

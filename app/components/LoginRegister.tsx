@@ -1,5 +1,4 @@
-// app/components/LoginRegister.tsx
-"use client"; // Añadir esta línea para marcar el componente como Cliente
+"use client";
 
 import React, { useState } from 'react';
 import axios from 'axios';

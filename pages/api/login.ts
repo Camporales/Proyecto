@@ -29,7 +29,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Generar un token JWT
-    const token = jwt.sign({ username: user.username }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '1h' });
 
     // Devolver el token y el nombre de usuario
     res.status(200).json({ token, username: user.username, message: 'Inicio de sesión exitoso.' });
